@@ -1,92 +1,218 @@
 # Django Privacy Policy Tools
 
+This is a Django app to manage privacy policies and to handle the
+process of confirmation trough the users. 
 
+Features: 
 
-## Getting started
+* Create policies using the admin interface
+* Different policies for different groups
+* Text styling with html
+* Confirmation middleware to force the users to confirm the policies
+* View all confirmations in the admin interface
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+This app is build for the current LTS Version of 
+[Django](https://www.djangoproject.com/), which is 3.2.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Install
 
-## Add your files
+Install the app using pip.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
+```shell
+pip install django-privacy-policy-tools
 ```
-cd existing_repo
-git remote add origin https://gitlab.tugraz.at/llt/learninglab_coop/pythondev/django/django-privacy-policy-tools.git
-git branch -M main
-git push -uf origin main
+
+## Configure
+
+At first you have to add the app to your `INSTALLED_APPS` in your `settings.py`.
+
+```python
+INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django.contrib.humanize',
+    'privacy_policy_tools.apps.PrivacyPolicyToolsConfig',
+    ...
+)
 ```
 
-## Integrate with your tools
+Add the middleware of the app to your `MIDDLEWARE` in your `settings.py`.
 
-- [ ] [Set up project integrations](https://gitlab.tugraz.at/llt/learninglab_coop/pythondev/django/django-privacy-policy-tools/-/settings/integrations)
+```python
+MIDDLEWARE = (
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'privacy_policy_tools.middleware.PrivacyPolicyMiddleware',
+    ...
+)
+```
 
-## Collaborate with your team
+If you want to use the app in your templates (e.g. create a link to 
+the privacy policy page), you should 
+add the context processor of the app to your config in your `settings.py`.
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+```python
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
+                'privacy_policy_tools.context_processors.privacy_tools',
+            ],
+            'debug': True,
+        },
+    },
+]
+```
 
-## Test and Deploy
+Now you can configure the app in your `settings.py`.
 
-Use the built-in continuous integration in GitLab.
+```python
+PRIVACY_POLICY_TOOLS = {
+    'ENABLED': True,
+    'POLICY_PAGE_URL': 'terms/and/conditions',
+    'POLICY_CONFIRM_URL': 'terms/and/conditions/confirm',
+    'IGNORE_URLS': ['admin', ],
+    'DEFAULT_POLICY': True
+}
+```
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+Possible values are: 
 
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+* __ENABLED__: True to enable the privacy policy tools. This means the users
+  have to confirm the created policies.
+* __POLICY_PAGE_URL__: URL schema of the policy page to show all active policies
+* __POLICY_CONFIRM_URL__: URL schema of the page to confirm a policy
+* __IGNORE_URLS__: List of URLs which contains these values could be accessed without
+  confirming a policy. Add the admin site to let you create a policy.
+* __DEFAULT_POLICY__: If true the policy created for no group has to be confirmed
+  by all users. If false such a policy has to be confirmed by users with no group only. 
 
 ## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+After configuring the app everything is ready to be used. Start by creating a policy
+in the admin interface. It is possible to create different policies for different groups.
+Depending on your language settings you will get a field for each language for the policy
+title and text.
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+Now the users are required to confirm your created policies.
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+## Customization
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+### Overwrite templates to customize the style
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+The included templates are using the base templet of the admin site. If you want
+to change this style to match your project you can overwrite these two templates
+by placing them in an app loaded in `INSTALLED_APPS` before this app. There
+are the following templates:
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+* `privacy_policy_tools/show.html`
+* `privacy_policy_tools/confirm.html`
 
-## License
-For open source projects, say how it is licensed.
+In `show.html` you have to place something like this: 
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+```
+{% for policy in policies %}
+    <h3>{{ policy.title }}</h3>
+    <p><small>{% trans "Last changed:" %} {{ policy.published_at }}</small></p>
+    <p>{{ policy.text|safe }}</p>
+{% endfor %}
+```
+
+In `confirm.html` you have to do something like this: 
+
+```
+<h3>{{ policy.title }}</h3>
+<p>{% trans "Last changed:" %}
+    {{ policy.published_at }}</p>
+
+<p>{{ policy.text|safe }}</p>
+
+{% if is_authenticated and not is_confirmed %}
+<form method="post" action="{{ form_url }}">
+    {% csrf_token %}
+    <input type="submit" value="{% trans "Confirm" %}" />
+</form>
+{% endif %}
+```
+
+### Link to policies
+
+If you want to place a link to the policies at your page (e.g. in the footer)
+you have to add a context processor as shown above. After that you can
+create the link in your template in the following way:
+
+```
+{% if privacy_enabled %}
+    <a href="{% url privacy_view %}">{% trans "Terms and Conditions" %}</a>
+{% endif %}
+```
+
+### Add confirm checkbox to your registration form
+
+To add a checkbox to your registration form where the users could confirm
+your policies during registration, you have to do multiple things. At first
+create the form and add the fields: 
+
+```python
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from privacy_policy_tools.utils import get_setting
+
+class UserCreateForm(UserCreationForm):
+  
+    def __init__(self, *args, **kwargs):
+        super(UserCreateForm, self).__init__(*args, **kwargs)
+        if get_setting('ENABLED', False):
+            self.fields['confirm_privacy'] = forms.BooleanField(
+                label=_('I accept the Terms and Conditions')
+            )
+```
+
+In the corresponding view you have to save the confirmation. Such a view
+could look like this: 
+
+```python
+from django.shortcuts import render
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+from django.contrib.auth.models import User
+from privacy_policy_tools.utils import save_confirmation, get_setting
+from yourapp.forms import UserCreateForm
+
+def create_user(request):
+    if request.method == 'POST':
+        form = UserCreateForm(request.POST, label_suffix='')
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            email = form.cleaned_data['email']
+            user = User.objects.create_user(username, email, password)
+            if get_setting('ENABLED'):
+                save_confirmation(user)
+            return HttpResponseRedirect(reverse('yourapp.views.index'))
+
+    else:
+        form = UserCreateForm()
+
+    return render(request, 'registration/create_user.html', {
+        'form': form,
+    })
+```

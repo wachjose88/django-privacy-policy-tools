@@ -1,0 +1,10 @@
+[flake8]
+ignore = E722, E741, E402, E501
+exclude =
+    .git,
+    __pycache__,
+    migrations,
+    static,
+    urls.py,
+    templates,
+    locale

@@ -1,0 +1,96 @@
+
+# Copyright (c) 2022 Josef Wachtler
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.0.1\n"
+"Report-Msgid-Bugs-To: josef.wachtler@gmail.com\n"
+"POT-Creation-Date: 2022-06-14 10:59+0200\n"
+"PO-Revision-Date: 2022-06-14 10:59+0200\n"
+"Last-Translator: Josef Wachtler <josef.wachtler@gmail.com>\n"
+"Language-Team: LANGUAGE <josef.wachtler@gmail.com>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: apps.py:33
+msgid "Privacy Policy Tools"
+msgstr "Datenschutzerklärung Tools"
+
+#: models.py:44
+msgid "Title"
+msgstr "Titel"
+
+#: models.py:45 models.py:58 models.py:61 models.py:82
+msgid "Privacy Policy"
+msgstr "Datenschutzerklärung"
+
+#: models.py:46
+msgid "Text"
+msgstr "Text"
+
+#: models.py:47
+msgid "Active"
+msgstr "Aktiv"
+
+#: models.py:49
+msgid "Published at"
+msgstr "Veröffentlicht um"
+
+#: models.py:52
+msgid "For group"
+msgstr "Für Gruppe"
+
+#: models.py:62
+msgid "Privacy Policies"
+msgstr "Datenschutzerklärungen"
+
+#: models.py:77
+msgid "User"
+msgstr "Benutzer"
+
+#: models.py:79 models.py:88
+msgid "Confirmed at"
+msgstr "Zugestimmt um"
+
+#: models.py:91
+msgid "Privacy Policy Confirmation"
+msgstr "Datenschutzerklärung Zustimmung"
+
+#: models.py:92
+msgid "Privacy Policy Confirmations"
+msgstr "Datenschutzerklärung Zustimmungen"
+
+#: templates/privacy_policy_tools/confirm.html:35
+#: templates/privacy_policy_tools/show.html:38
+msgid "Last changed:"
+msgstr "Letzte Änderung"
+
+#: templates/privacy_policy_tools/confirm.html:43
+msgid "Confirm"
+msgstr "Zustimmen"
+
+#: templates/privacy_policy_tools/show.html:28
+#: templates/privacy_policy_tools/show.html:29
+msgid "Terms and Conditions"
+msgstr "Benutzerrichtlinien"
