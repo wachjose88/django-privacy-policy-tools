@@ -1,4 +1,3 @@
-
 # Copyright (c) 2022 Josef Wachtler
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,12 +17,11 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
-"Report-Msgid-Bugs-To: josef.wachtler@gmail.com\n"
-"POT-Creation-Date: 2022-06-14 10:59+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-02 15:50+0100\n"
 "PO-Revision-Date: 2022-06-14 10:59+0200\n"
 "Last-Translator: Josef Wachtler <josef.wachtler@gmail.com>\n"
 "Language-Team: LANGUAGE <josef.wachtler@gmail.com>\n"
@@ -37,47 +35,67 @@ msgstr ""
 msgid "Privacy Policy Tools"
 msgstr "Datenschutzerklärung Tools"
 
-#: models.py:44
+#: models.py:45
 msgid "Title"
 msgstr "Titel"
 
-#: models.py:45 models.py:58 models.py:61 models.py:82
+#: models.py:46 models.py:67 models.py:70 models.py:91
 msgid "Privacy Policy"
 msgstr "Datenschutzerklärung"
 
-#: models.py:46
+#: models.py:47
 msgid "Text"
 msgstr "Text"
 
-#: models.py:47
+#: models.py:49
+msgid "Confirm checkbox"
+msgstr "Checkbox zum Zustimmen"
+
+#: models.py:51
+msgid "Confirm checkbox text"
+msgstr "Text für Zustimmen Checkbox"
+
+#: models.py:52
+msgid "I agree to the terms of this privacy policy"
+msgstr "Ich stimme der Datenschutzerklärung zu"
+
+#: models.py:54
+msgid "Confirm button text"
+msgstr "Text für Zustimmen Button"
+
+#: models.py:55
+msgid "Agree"
+msgstr "Zustimmen"
+
+#: models.py:56
 msgid "Active"
 msgstr "Aktiv"
 
-#: models.py:49
+#: models.py:58
 msgid "Published at"
 msgstr "Veröffentlicht um"
 
-#: models.py:52
+#: models.py:61
 msgid "For group"
 msgstr "Für Gruppe"
 
-#: models.py:62
+#: models.py:71
 msgid "Privacy Policies"
 msgstr "Datenschutzerklärungen"
 
-#: models.py:77
+#: models.py:86
 msgid "User"
 msgstr "Benutzer"
 
-#: models.py:79 models.py:88
+#: models.py:88 models.py:97
 msgid "Confirmed at"
 msgstr "Zugestimmt um"
 
-#: models.py:91
+#: models.py:100
 msgid "Privacy Policy Confirmation"
 msgstr "Datenschutzerklärung Zustimmung"
 
-#: models.py:92
+#: models.py:101
 msgid "Privacy Policy Confirmations"
 msgstr "Datenschutzerklärung Zustimmungen"
 
@@ -85,10 +103,6 @@ msgstr "Datenschutzerklärung Zustimmungen"
 #: templates/privacy_policy_tools/show.html:38
 msgid "Last changed:"
 msgstr "Letzte Änderung"
-
-#: templates/privacy_policy_tools/confirm.html:43
-msgid "Confirm"
-msgstr "Zustimmen"
 
 #: templates/privacy_policy_tools/show.html:28
 #: templates/privacy_policy_tools/show.html:29

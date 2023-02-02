@@ -31,6 +31,7 @@ from django.utils import timezone
 from privacy_policy_tools.models import PrivacyPolicy, \
     PrivacyPolicyConfirmation
 from privacy_policy_tools.utils import get_active_policies
+from privacy_policy_tools.forms import ConfirmForm
 
 
 def show(request):
@@ -78,12 +79,27 @@ def confirm(request, policy_id, next='/terms/and/conditions'):
 
     if request.method == 'POST' and not is_confirmed \
             and request.user.is_authenticated:
-        confirmation = PrivacyPolicyConfirmation(
-            user=request.user,
-            confirmed_at=timezone.now(),
-            privacy_policy=policy)
-        confirmation.save()
-        return HttpResponseRedirect(next)
+        if policy.confirm_checkbox is True:
+            form = ConfirmForm(
+                request.POST,
+                agree_label=policy.confirm_checkbox_text)
+            if form.is_valid():
+                confirmation = PrivacyPolicyConfirmation(
+                    user=request.user,
+                    confirmed_at=timezone.now(),
+                    privacy_policy=policy)
+                confirmation.save()
+                return HttpResponseRedirect(next)
+        else:
+            confirmation = PrivacyPolicyConfirmation(
+                user=request.user,
+                confirmed_at=timezone.now(),
+                privacy_policy=policy)
+            confirmation.save()
+            return HttpResponseRedirect(next)
+    else:
+        if policy.confirm_checkbox is True:
+            form = ConfirmForm(agree_label=policy.confirm_checkbox_text)
 
     params = {
         'policy': policy,
@@ -91,6 +107,8 @@ def confirm(request, policy_id, next='/terms/and/conditions'):
         'is_authenticated': request.user.is_authenticated,
         'form_url': url
     }
+    if policy.confirm_checkbox is True:
+        params['form'] = form
 
     return render(
         request, 'privacy_policy_tools/confirm.html', params)

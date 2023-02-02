@@ -45,6 +45,14 @@ class PrivacyPolicy(models.Model):
     title = models.CharField(max_length=128, verbose_name=_('Title'),
                              default=_('Privacy Policy'))
     text = RichTextField(verbose_name=_('Text'))
+    confirm_checkbox = models.BooleanField(
+        default=False, verbose_name=_('Confirm checkbox'))
+    confirm_checkbox_text = models.CharField(
+        max_length=128, verbose_name=_('Confirm checkbox text'),
+        default=_('I agree to the terms of this privacy policy'))
+    confirm_button_text = models.CharField(
+        max_length=128, verbose_name=_('Confirm button text'),
+        default=_('Agree'))
     active = models.BooleanField(default=False, verbose_name=_('Active'))
     published_at = models.DateTimeField(default=timezone.now,
                                         verbose_name=_('Published at'))
