@@ -20,21 +20,28 @@
 # SOFTWARE.
 
 """
-This module handles the model translation. It registers models which have
-content in multiple languages.
+This module provides the forms of the privacy_policy_tools.
 """
 
-from modeltranslation.translator import translator, TranslationOptions
+from django import forms
+from django.utils.translation import ugettext_lazy as _
 
-from privacy_policy_tools.models import PrivacyPolicy
 
-
-class PrivacyPolicyTranslationOptions(TranslationOptions):
+class ConfirmForm(forms.Form):
     """
-    Registers the fields of the PrivacyPolicy model for translation.
+    This is a form to confirm a policy
+
+    Fields:
+        - agree -- true to agree to a policy
     """
-    fields = ('title', 'text', 'confirm_checkbox_text',
-              'confirm_button_text')
+    use_required_attribute = False
+    agree = forms.BooleanField(required=True)
 
-
-translator.register(PrivacyPolicy, PrivacyPolicyTranslationOptions)
+    def __init__(self, *args, **kwrds):
+        """
+        constuctor
+        sets label
+        """
+        agree_label = kwrds.pop('agree_label')
+        super(ConfirmForm, self).__init__(*args, **kwrds)
+        self.fields['agree'].label = _(agree_label)

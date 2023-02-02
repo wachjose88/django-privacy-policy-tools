@@ -146,10 +146,33 @@ In `confirm.html` you have to do something like this:
 <p>{{ policy.text|safe }}</p>
 
 {% if is_authenticated and not is_confirmed %}
-<form method="post" action="{{ form_url }}">
-    {% csrf_token %}
-    <input type="submit" value="{% trans "Confirm" %}" />
-</form>
+    {% if policy.confirm_checkbox is True %}
+        {% if form.non_field_errors %}
+        <ul class="errorlist">
+            <li>{{ form.non_field_errors }}</li>
+        </ul>
+        {% endif %}
+    {% endif %}
+    <form method="post" action="{{ form_url }}">
+        {% csrf_token %}
+        {% if policy.confirm_checkbox is True %}
+            {% for field in form %}
+            {% if field.errors %}
+            <ul class="errorlist">
+                {% for error in field.errors %}
+                <li>{{ error|escape }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <div class="checkbox">
+                {{ field }} {{ field.label }}
+            </div>
+            {% endfor %}
+        {% endif %}
+        <input type="submit" class="default" id="btn_create"
+               value="{{ policy.confirm_button_text }}"
+            style="float: left !important;"/>
+    </form>
 {% endif %}
 ```
 
