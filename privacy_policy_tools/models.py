@@ -26,7 +26,7 @@ This module provides the models of the privacy_policy_tools.
 from django.db import models
 from django.contrib.auth.models import Group, User
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from ckeditor.fields import RichTextField
 
 
