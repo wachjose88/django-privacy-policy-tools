@@ -12,7 +12,7 @@ Features:
 * View all confirmations in the admin interface
 
 This app is build for the current LTS Version of 
-[Django](https://www.djangoproject.com/), which is 3.2.
+[Django](https://www.djangoproject.com/), which is 4.2.
 
 ## Install
 
@@ -53,6 +53,16 @@ MIDDLEWARE = (
     'privacy_policy_tools.middleware.PrivacyPolicyMiddleware',
     ...
 )
+```
+
+Add the URL configuration to your main urls.py:
+
+```python
+urlpatterns = [
+    ...
+    re_path(r'^privacy/', include('privacy_policy_tools.urls')),
+    ...
+]
 ```
 
 If you want to use the app in your templates (e.g. create a link to 
