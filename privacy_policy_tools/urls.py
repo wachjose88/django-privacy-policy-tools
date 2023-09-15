@@ -23,7 +23,7 @@
 This module designs the urls of the package privacy_policy_tools.
 """
 
-from django.conf.urls import url
+from django.urls import re_path
 from privacy_policy_tools.utils import get_setting
 from privacy_policy_tools.views import confirm, show
 
@@ -31,10 +31,10 @@ confirm_url = get_setting('POLICY_CONFIRM_URL')
 page_url = get_setting('POLICY_PAGE_URL')
 
 urlpatterns = [
-    url(r'^' + page_url + r'$',
+    re_path(r'^' + page_url + r'$',
      show, name='privacy_policy_tools.views.show'),
-    url(r'^' + confirm_url + r'/(?P<policy_id>[0-9]+)$',
+    re_path(r'^' + confirm_url + r'/(?P<policy_id>[0-9]+)$',
      confirm, name='privacy_policy_tools.views.confirm'),
-    url(r'^' + confirm_url + r'/(?P<policy_id>[0-9]+)/next(?P<next>.+)$',
+    re_path(r'^' + confirm_url + r'/(?P<policy_id>[0-9]+)/next(?P<next>.+)$',
      confirm, name='privacy_policy_tools.views.confirm'),
 ]
