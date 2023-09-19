@@ -32,6 +32,21 @@ from privacy_policy_tools.models import PrivacyPolicy, \
     PrivacyPolicyConfirmation
 
 
+def get_by_py_path(py_path):
+    """
+    Imports and returns a python callable.
+
+    Keyword arguments:
+        py_path -- callable to load
+    """
+    parts = py_path.split('.')
+    module = ".".join(parts[:-1])
+    m = __import__(module)
+    for comp in parts[1:]:
+        m = getattr(m, comp)
+    return m
+
+
 def get_active_policies():
     """
     Returns a list of active policies.
@@ -43,7 +58,7 @@ def get_active_policies():
         policies.extend(nogroup)
     except PrivacyPolicy.DoesNotExist:
         pass
-    groups = Group.objects.all()
+    groups = Group.objects.all().order_by('name')
     for group in groups:
         try:
             active = group.privacypolicy_set.filter(
@@ -52,6 +67,26 @@ def get_active_policies():
         except PrivacyPolicy.DoesNotExist:
             pass
     return policies
+
+
+def get_active_policies_for_group(group=None):
+    """
+    Returns a list of active policies.
+    """
+    if group is None:
+        try:
+            nogroup = PrivacyPolicy.objects.filter(
+                for_group=None, active=True).order_by('-published_at')
+            return nogroup
+        except PrivacyPolicy.DoesNotExist:
+            return []
+    else:
+        try:
+            active = group.privacypolicy_set.filter(
+                active=True).order_by('-published_at')
+            return active
+        except PrivacyPolicy.DoesNotExist:
+            return []
 
 
 def get_setting(key, default=None):

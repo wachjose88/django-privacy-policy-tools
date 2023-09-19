@@ -63,6 +63,7 @@ def confirm(request, policy_id, next='/terms/and/conditions'):
     Template: privacy_policy_tools/confirm.html
     """
     policy = get_object_or_404(PrivacyPolicy, id=policy_id)
+    print(policy.confirm_checkbox_text_de)
 
     url = reverse('privacy_policy_tools.views.confirm',
                   args=(policy_id,))

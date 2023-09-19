@@ -24,7 +24,8 @@ This module provides the models of the privacy_policy_tools.
 """
 
 from django.db import models
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
+from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from ckeditor.fields import RichTextField
@@ -48,11 +49,9 @@ class PrivacyPolicy(models.Model):
     confirm_checkbox = models.BooleanField(
         default=False, verbose_name=_('Confirm checkbox'))
     confirm_checkbox_text = models.CharField(
-        max_length=128, verbose_name=_('Confirm checkbox text'),
-        default=_('I agree to the terms of this privacy policy'))
+        max_length=128, verbose_name=_('Confirm checkbox text'))
     confirm_button_text = models.CharField(
-        max_length=128, verbose_name=_('Confirm button text'),
-        default=_('Agree'))
+        max_length=128, verbose_name=_('Confirm button text'))
     active = models.BooleanField(default=False, verbose_name=_('Active'))
     published_at = models.DateTimeField(default=timezone.now,
                                         verbose_name=_('Published at'))
@@ -81,7 +80,7 @@ class PrivacyPolicyConfirmation(models.Model):
         - confirmed_at -- date and time of confirmation
         - privacy_policy -- the confirmed privacy policy
     """
-    user = models.ForeignKey(User,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE,
                              verbose_name=_('User'))
     confirmed_at = models.DateTimeField(default=timezone.now,
