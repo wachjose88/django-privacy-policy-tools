@@ -22,16 +22,17 @@
 """
 This module provides the views of the privacy_policy_tools.
 """
-
-from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 
 from privacy_policy_tools.models import PrivacyPolicy, \
     PrivacyPolicyConfirmation
-from privacy_policy_tools.utils import get_active_policies
-from privacy_policy_tools.forms import ConfirmForm
+from privacy_policy_tools.utils import get_active_policies, get_setting, \
+    get_by_py_path
+from privacy_policy_tools.forms import ConfirmForm, SecondConfirmGetEmail
 
 
 def show(request):
@@ -63,7 +64,6 @@ def confirm(request, policy_id, next='/terms/and/conditions'):
     Template: privacy_policy_tools/confirm.html
     """
     policy = get_object_or_404(PrivacyPolicy, id=policy_id)
-    print(policy.confirm_checkbox_text_de)
 
     url = reverse('privacy_policy_tools.views.confirm',
                   args=(policy_id,))
@@ -113,3 +113,53 @@ def confirm(request, policy_id, next='/terms/and/conditions'):
 
     return render(
         request, 'privacy_policy_tools/confirm.html', params)
+
+
+@login_required
+def second_confirm_required(request, confirm_id):
+    confirmation = get_object_or_404(PrivacyPolicyConfirmation,
+                                     id=confirm_id)
+    if confirmation.second_confirmed_at is not None:
+        raise Http404
+    get_hook = get_setting(
+        'SECOND_CONFIRMATION_GET_EMAIL_HOOK', None)
+
+    if get_hook is not None:
+        get_hook = get_by_py_path(get_hook)
+        parent_email = get_hook(request)
+    else:
+        raise Http404
+
+    url = reverse('privacy_policy_tools.views.second_confirm_required',
+                  args=(confirmation.id, ))
+    if request.method == 'POST':
+        form = SecondConfirmGetEmail(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            save_hook = get_setting(
+                'SECOND_CONFIRMATION_SAVE_EMAIL_HOOK', None)
+
+            if save_hook is not None:
+                save_hook = get_by_py_path(save_hook)
+                save_hook(request, email)
+            else:
+                raise Http404
+            return HttpResponseRedirect('/')
+    else:
+        if parent_email is not None:
+            data = {'email': parent_email}
+            form = SecondConfirmGetEmail(initial=data)
+        else:
+            form = SecondConfirmGetEmail()
+    params = {
+        'form': form,
+        'policy': confirmation.privacy_policy,
+        'confirmation': confirmation,
+        'form_url': url,
+        'parent_email': parent_email
+    }
+
+    return render(
+        request,
+        'privacy_policy_tools/second_confirm_required.html',
+        params)

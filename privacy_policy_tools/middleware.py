@@ -67,7 +67,7 @@ class PrivacyPolicyMiddleware(object):
                     url not in request.path_info and \
                     all(ignore not in request.path_info
                         for ignore in ignore_urls):
-                start_hook = get_setting('START_HOOK')
+                start_hook = get_setting('START_HOOK', None)
                 if start_hook is not None:
                     start_hook = get_by_py_path(start_hook)
                     if start_hook(request) is False:
@@ -85,25 +85,50 @@ class PrivacyPolicyMiddleware(object):
                         confirms = PrivacyPolicyConfirmation.objects.filter(
                             privacy_policy=policy, user=request.user)
                         if len(confirms) <= 0:
-                            next_view = request.path_info
-                            login_view = reverse('login')
-                            if next_view == login_view:
-                                next_view = request.POST.get(
-                                    'next',
-                                    request.GET.get(
-                                        'next',
-                                        settings.LOGIN_REDIRECT_URL
-                                    )
-                                )
-                                if not url_has_allowed_host_and_scheme(
-                                    next_view,
-                                    {request.get_host(), *set(
-                                        settings.ALLOWED_HOSTS
-                                    )},
-                                    request.is_secure()
-                                ):
-                                    next_view = settings.LOGIN_REDIRECT_URL
+                            next_view = self._generate_next(request)
                             return HttpResponseRedirect(reverse(
                                 'privacy_policy_tools.views.confirm',
                                 args=(policy.id, next_view,)))
+                        else:
+                            second = self._second_confirmation(
+                                request, confirms.first())
+                            if second is not None:
+                                return second
         return response
+
+    def _second_confirmation(self, request, confirmation):
+        required_hook = get_setting('SECOND_CONFIRMATION_REQUIRED_HOOK',
+                                    None)
+        if required_hook is None:
+            return None
+        if required_hook is not None:
+            required_hook = get_by_py_path(required_hook)
+            if required_hook(request) is False:
+                return None
+        if confirmation.second_confirmed_at is not None:
+            return None
+        return HttpResponseRedirect(reverse(
+            'privacy_policy_tools.views.second_confirm_required',
+            args=(confirmation.id, )
+        ))
+
+    def _generate_next(self, request):
+        next_view = request.path_info
+        login_view = reverse('login')
+        if next_view == login_view:
+            next_view = request.POST.get(
+                'next',
+                request.GET.get(
+                    'next',
+                    settings.LOGIN_REDIRECT_URL
+                )
+            )
+            if not url_has_allowed_host_and_scheme(
+                    next_view,
+                    {request.get_host(), *set(
+                        settings.ALLOWED_HOSTS
+                    )},
+                    request.is_secure()
+            ):
+                next_view = settings.LOGIN_REDIRECT_URL
+        return next_view

@@ -27,6 +27,14 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 
+class SecondConfirmGetEmail(forms.Form):
+    use_required_attribute = False
+    email = forms.EmailField(
+        label=_('E-mail'),
+        required=True
+    )
+
+
 class ConfirmForm(forms.Form):
     """
     This is a form to confirm a policy

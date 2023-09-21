@@ -88,6 +88,12 @@ class PrivacyPolicyConfirmation(models.Model):
     privacy_policy = models.ForeignKey(PrivacyPolicy,
                                        on_delete=models.CASCADE,
                                        verbose_name=_('Privacy Policy'))
+    second_confirmed_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_('Second confirmed at'),
+        default=None
+    )
 
     def __str__(self):
         """
