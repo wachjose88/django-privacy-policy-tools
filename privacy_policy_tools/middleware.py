@@ -103,7 +103,7 @@ class PrivacyPolicyMiddleware(object):
             return None
         if required_hook is not None:
             required_hook = get_by_py_path(required_hook)
-            if required_hook(request) is False:
+            if required_hook(request, confirmation) is False:
                 return None
         if confirmation.second_confirmed_at is not None:
             return None
