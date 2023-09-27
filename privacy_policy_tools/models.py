@@ -22,6 +22,8 @@
 """
 This module provides the models of the privacy_policy_tools.
 """
+import random
+import string
 
 from django.db import models
 from django.contrib.auth.models import Group
@@ -104,3 +106,46 @@ class PrivacyPolicyConfirmation(models.Model):
     class Meta:
         verbose_name = _('Privacy Policy Confirmation')
         verbose_name_plural = _('Privacy Policy Confirmations')
+
+
+class OneTimeToken(models.Model):
+    """
+    This model represents a token for second confirmation
+    """
+    LENGTH = 32
+    token = models.CharField(
+        max_length=LENGTH,
+        verbose_name=_('Token')
+    )
+    created_at = models.DateTimeField(default=timezone.now,
+                                      verbose_name=_('Created at'))
+    confirmation = models.ForeignKey(PrivacyPolicyConfirmation,
+                                     on_delete=models.CASCADE,
+                                     verbose_name=_('Confirmation'))
+
+    def __str__(self):
+        """
+        Unicode Representation
+        """
+        return str(self.token)
+
+    @classmethod
+    def create_token(cls, confirmation):
+        token = cls._generat_token()
+        while cls.objects.filter(token=token,
+                                 confirmation=confirmation).exists():
+            token = cls._generat_token()
+        ott = cls(token=token, confirmation=confirmation)
+        ott.save()
+        return ott
+
+    @classmethod
+    def _generat_token(cls):
+        token = ''.join(
+            random.choice(string.ascii_lowercase) for i in range(
+                0, cls.LENGTH))
+        return token
+
+    class Meta:
+        verbose_name = _('One Time Token')
+        verbose_name_plural = _('One Time Tokens')

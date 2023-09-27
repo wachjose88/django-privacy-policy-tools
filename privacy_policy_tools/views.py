@@ -22,14 +22,21 @@
 """
 This module provides the views of the privacy_policy_tools.
 """
+from smtplib import SMTPException
+
+from django.contrib import messages
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
+from django.utils.translation import gettext_lazy as _
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
 
 from privacy_policy_tools.models import PrivacyPolicy, \
-    PrivacyPolicyConfirmation
+    PrivacyPolicyConfirmation, OneTimeToken
 from privacy_policy_tools.utils import get_active_policies, get_setting, \
     get_by_py_path
 from privacy_policy_tools.forms import ConfirmForm, SecondConfirmGetEmail
@@ -144,6 +151,37 @@ def second_confirm_required(request, confirm_id):
                 save_hook(request, email)
             else:
                 raise Http404
+            token = OneTimeToken.create_token(confirmation)
+            confirm_url = reverse('privacy_policy_tools.views'
+                                  '.second_confirm',
+                                  args=(confirmation.id, token))
+            confirm_url = request.build_absolute_uri(confirm_url)
+            context = {
+                'confirm_url': confirm_url,
+            }
+            print(confirm_url)
+            subject = render_to_string(
+                'privacy_policy_tools/second_confirm_mail_subject.txt',
+                {})
+            message = render_to_string(
+                'privacy_policy_tools/second_confirm_mail.txt',
+                context, request)
+            from_email = get_setting('SECOND_CONFIRM_FROM_EMAIL',
+                                     'no-reply@example.com')
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    from_email,
+                    [email],
+                    fail_silently=False,
+                )
+                messages.info(request, _('The E-mail was sent to request the '
+                                         'confirmation.'))
+            except SMTPException:
+                messages.info(request, _('E-mail could not be sent'))
+
+            logout(request)
             return HttpResponseRedirect('/')
     else:
         if parent_email is not None:
@@ -162,4 +200,60 @@ def second_confirm_required(request, confirm_id):
     return render(
         request,
         'privacy_policy_tools/second_confirm_required.html',
+        params)
+
+
+def second_confirm(request, confirm_id, token):
+    confirmation = get_object_or_404(PrivacyPolicyConfirmation,
+                                     id=confirm_id)
+    if confirmation.second_confirmed_at is not None:
+        return render(
+            request,
+            'privacy_policy_tools/second_confirm_invalid.html', {})
+    tokens = OneTimeToken.objects.filter(
+        confirmation=confirmation,
+        token=token
+    )
+    if len(tokens) != 1:
+        return render(
+            request,
+            'privacy_policy_tools/second_confirm_invalid.html', {})
+    token = tokens.first()
+    valid_for = get_setting('SECOND_CONFIRM_VALID_FOR_MINUTES', 10)
+    now = timezone.now()
+    delta = now - token.created_at
+    delta_minutes = int(delta.total_seconds() / 60)
+    if delta_minutes > valid_for:
+        return render(
+            request,
+            'privacy_policy_tools/second_confirm_invalid.html', {})
+
+    if request.method == 'POST':
+        form = ConfirmForm(
+            request.POST,
+            agree_label=confirmation.privacy_policy.confirm_checkbox_text
+        )
+        if form.is_valid():
+            confirmation.second_confirmed_at = timezone.now()
+            confirmation.save()
+            messages.info(request, _('You have successfully agreed to the '
+                                     'privacy policy.'))
+            return HttpResponseRedirect('/')
+    else:
+        form = ConfirmForm(
+            agree_label=confirmation.privacy_policy.confirm_checkbox_text
+        )
+
+    form_url = reverse('privacy_policy_tools.views.second_confirm',
+                       args=(confirmation.id, token))
+
+    params = {
+        'policy': confirmation.privacy_policy,
+        'form': form,
+        'form_url': form_url
+    }
+
+    return render(
+        request,
+        'privacy_policy_tools/second_confirm.html',
         params)
