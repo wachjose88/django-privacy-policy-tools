@@ -1,5 +1,5 @@
 
-# Copyright (c) 2022 Josef Wachtler
+# Copyright (c) 2022-2023 Josef Wachtler
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -124,6 +124,15 @@ def confirm(request, policy_id, next='/terms/and/conditions'):
 
 @login_required
 def second_confirm_required(request, confirm_id):
+    """
+    Displays a form to enter an E-mail if a second confirmation is required.
+
+    Keyword arguments:
+        - request -- the calling HttpRequest
+        - confirm_id -- id of the open confirmation
+
+    Template: privacy_policy_tools/second_confirm_required.html
+    """
     confirmation = get_object_or_404(PrivacyPolicyConfirmation,
                                      id=confirm_id)
     if confirmation.second_confirmed_at is not None:
@@ -204,6 +213,18 @@ def second_confirm_required(request, confirm_id):
 
 
 def second_confirm(request, confirm_id, token):
+    """
+    Displays the policy for the second confirmation.
+
+    Keyword arguments:
+        - request -- the calling HttpRequest
+        - confirm_id -- id of the open confirmation
+        - token -- token to verify
+
+    Templates:
+        - privacy_policy_tools/second_confirm_invalid.html
+        - privacy_policy_tools/second_confirm.html
+    """
     confirmation = get_object_or_404(PrivacyPolicyConfirmation,
                                      id=confirm_id)
     if confirmation.second_confirmed_at is not None:
@@ -236,6 +257,7 @@ def second_confirm(request, confirm_id, token):
         if form.is_valid():
             confirmation.second_confirmed_at = timezone.now()
             confirmation.save()
+            token.delete()
             messages.info(request, _('You have successfully agreed to the '
                                      'privacy policy.'))
             return HttpResponseRedirect('/')

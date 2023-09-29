@@ -1,5 +1,5 @@
 
-# Copyright (c) 2022 Josef Wachtler
+# Copyright (c) 2022-2023 Josef Wachtler
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -110,7 +110,12 @@ class PrivacyPolicyConfirmation(models.Model):
 
 class OneTimeToken(models.Model):
     """
-    This model represents a token for second confirmation
+    This model represents a token for second confirmation.
+
+    Fields:
+        - token -- token to use
+        - created_at -- datetime of token creation
+        - confirmation -- confirmation to which the token is related
     """
     LENGTH = 32
     token = models.CharField(
@@ -131,6 +136,15 @@ class OneTimeToken(models.Model):
 
     @classmethod
     def create_token(cls, confirmation):
+        """
+        Creates a new token.
+
+        Args:
+            confirmation: confirmation for the token
+
+        Returns:
+            the created token
+        """
         token = cls._generat_token()
         while cls.objects.filter(token=token,
                                  confirmation=confirmation).exists():
@@ -141,6 +155,12 @@ class OneTimeToken(models.Model):
 
     @classmethod
     def _generat_token(cls):
+        """
+        Generates a new token string.
+
+        Returns:
+            the token string
+        """
         token = ''.join(
             random.choice(string.ascii_lowercase) for i in range(
                 0, cls.LENGTH))

@@ -249,3 +249,44 @@ def create_user(request):
         'form': form,
     })
 ```
+
+### Start hook
+
+It is possible to add a hook at the beginning of the evaluation if the
+privacy policy should be shown to the user. With this hook you can perform
+additional checks depending on your project.
+
+To add this hook add the following setting to the configuration in `settings.py`:
+
+* __START_HOOK__: a function in python-dotted syntax to check if the policy
+ should be displayed. The function takes one argument which is the Django request
+ object. It should return True if the policy should be displayed or False if not.
+
+## Second confirmation
+
+The app is able to request a second confirmation to a privacy policy. This may be 
+case if a confirmation of a parent is required. For that an email is sent to the
+person for the second confirmation.
+
+To use this feature some settings must be provided:
+
+* __SECOND_CONFIRMATION_REQUIRED_HOOK__: a function in python-dotted syntax to
+ decide if a second confirmation is required. It takes the Django request object
+ as the first parameter. The second parameter is the confirmation object of this
+ app for which a second confirmation is required. It should return True if a 
+ second confirmation is required or False if not.
+* __SECOND_CONFIRMATION_SAVE_EMAIL_HOOK__: a function in python-dotted syntax to
+ save the entered email to which the request for the second confirmation will be 
+ sent. The first parameter is the Django request object and the second one is the
+ email. There is no return value.
+* __SECOND_CONFIRMATION_GET_EMAIL_HOOK__: a function in python-dotted syntax to
+ get the saved email for the second confirmation. The only parameter is the Django
+ request object. It should return the email as a string or None if there is no
+ email.
+* __SECOND_CONFIRM_VALID_FOR_MINUTES__: optionally provide the timespan for how
+ long the second confirmation link should be valid. It has to be an integer 
+ providing the time in minutes. Default is 10.
+
+To further customize the templates it is possible to override them. For that copy
+the templates beginning with second_confirm to your project and change it
+according to your needs.
