@@ -1,5 +1,5 @@
 
-# Copyright (c) 2022 Josef Wachtler
+# Copyright (c) 2022-2023 Josef Wachtler
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -30,13 +30,14 @@ from privacy_policy_tools.models import PrivacyPolicy, \
     PrivacyPolicyConfirmation
 
 
-class PrivacyPolicyConfirmationInline(admin.TabularInline):
+class PrivacyPolicyConfirmationAdmin(admin.ModelAdmin):
     """
-    This admin inline handles the Privacy Policy Confirmations.
+    View confirmations to privacy policies.
     """
-    model = PrivacyPolicyConfirmation
-    fields = ('user', 'privacy_policy', 'confirmed_at', )
-    extra = 0
+    list_display = ('user', 'privacy_policy',
+                    'confirmed_at', 'second_confirmed_at')
+    list_filter = ['privacy_policy', 'confirmed_at', 'second_confirmed_at']
+    search_fields = ['user']
 
 
 class PrivacyPolicyAdmin(TranslationAdmin):
@@ -49,7 +50,6 @@ class PrivacyPolicyAdmin(TranslationAdmin):
     search_fields = ['title', 'text']
     date_hierarchy = 'published_at'
 
-    inlines = [PrivacyPolicyConfirmationInline]
-
 
 admin.site.register(PrivacyPolicy, PrivacyPolicyAdmin)
+admin.site.register(PrivacyPolicyConfirmation, PrivacyPolicyConfirmationAdmin)

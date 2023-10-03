@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-02 15:50+0100\n"
+"POT-Creation-Date: 2023-09-29 11:17+0200\n"
 "PO-Revision-Date: 2022-06-14 10:59+0200\n"
 "Last-Translator: Josef Wachtler <josef.wachtler@gmail.com>\n"
 "Language-Team: LANGUAGE <josef.wachtler@gmail.com>\n"
@@ -35,76 +35,168 @@ msgstr ""
 msgid "Privacy Policy Tools"
 msgstr "Datenschutzerklärung Tools"
 
-#: models.py:45
+#: forms.py:33
+msgid "E-mail"
+msgstr ""
+
+#: models.py:48
 msgid "Title"
 msgstr "Titel"
 
-#: models.py:46 models.py:67 models.py:70 models.py:91
+#: models.py:49 models.py:68 models.py:71 models.py:92
 msgid "Privacy Policy"
 msgstr "Datenschutzerklärung"
 
-#: models.py:47
+#: models.py:50
 msgid "Text"
 msgstr "Text"
 
-#: models.py:49
+#: models.py:52
 msgid "Confirm checkbox"
 msgstr "Checkbox zum Zustimmen"
 
-#: models.py:51
+#: models.py:54
 msgid "Confirm checkbox text"
 msgstr "Text für Zustimmen Checkbox"
 
-#: models.py:52
-msgid "I agree to the terms of this privacy policy"
-msgstr "Ich stimme der Datenschutzerklärung zu"
-
-#: models.py:54
+#: models.py:56
 msgid "Confirm button text"
 msgstr "Text für Zustimmen Button"
 
-#: models.py:55
-msgid "Agree"
-msgstr "Zustimmen"
-
-#: models.py:56
+#: models.py:57
 msgid "Active"
 msgstr "Aktiv"
 
-#: models.py:58
+#: models.py:59
 msgid "Published at"
 msgstr "Veröffentlicht um"
 
-#: models.py:61
+#: models.py:62
 msgid "For group"
 msgstr "Für Gruppe"
 
-#: models.py:71
+#: models.py:72
 msgid "Privacy Policies"
 msgstr "Datenschutzerklärungen"
 
-#: models.py:86
+#: models.py:87
 msgid "User"
 msgstr "Benutzer"
 
-#: models.py:88 models.py:97
+#: models.py:89 models.py:104
 msgid "Confirmed at"
 msgstr "Zugestimmt um"
 
-#: models.py:100
+#: models.py:96
+msgid "Second confirmed at"
+msgstr "Zweite Zustimmung um"
+
+#: models.py:107
 msgid "Privacy Policy Confirmation"
 msgstr "Datenschutzerklärung Zustimmung"
 
-#: models.py:101
+#: models.py:108
 msgid "Privacy Policy Confirmations"
 msgstr "Datenschutzerklärung Zustimmungen"
 
+#: models.py:123
+msgid "Token"
+msgstr ""
+
+#: models.py:126
+msgid "Created at"
+msgstr "Erstellt um"
+
+#: models.py:129
+msgid "Confirmation"
+msgstr "Zustimmung"
+
+#: models.py:170
+msgid "One Time Token"
+msgstr "Einmal-Token"
+
+#: models.py:171
+msgid "One Time Tokens"
+msgstr "Einmal-Tokens"
+
 #: templates/privacy_policy_tools/confirm.html:35
+#: templates/privacy_policy_tools/second_confirm.html:35
 #: templates/privacy_policy_tools/show.html:38
 msgid "Last changed:"
 msgstr "Letzte Änderung"
+
+#: templates/privacy_policy_tools/second_confirm_invalid.html:28
+#: templates/privacy_policy_tools/second_confirm_invalid.html:29
+msgid "Invalid token"
+msgstr "Ungültiger Token"
+
+#: templates/privacy_policy_tools/second_confirm_invalid.html:35
+msgid "The token is invalid or expired. Please request a new one."
+msgstr "Der Token ist ungültig oder abgelaufen. Bitte fordern Sie einen neuen an."
+
+#: templates/privacy_policy_tools/second_confirm_mail.txt:25
+msgid ""
+"\n"
+"Hello!\n"
+"\n"
+"Someone requested your confirmation to a privacy policy.\n"
+"Please click the following link to read the policy and to confirm it:\n"
+msgstr ""
+"\n"
+"Hallo!\n"
+"\n"
+"Jemand hat ihre Zustimmung zu einer Datenschutzerklärung angefordert.\n"
+"Bitte klicken Sie auf den folgenden Link um die Datenschutzerklärung zu lesen und zu bestätigen:\n"
+
+#: templates/privacy_policy_tools/second_confirm_mail.txt:32
+msgid ""
+"\n"
+"Thank you!\n"
+"Your privacy team\n"
+msgstr ""
+"\n"
+"Danke!\n"
+"Ihr Datenschutzteam\n"
+
+#: templates/privacy_policy_tools/second_confirm_mail_subject.txt:1
+msgid "Confirmation required"
+msgstr "Zustimmung erforderlich"
+
+#: templates/privacy_policy_tools/second_confirm_required.html:35
+msgid "A second confirmation is required. Please enter an email."
+msgstr "Eine zweite Zustimmung ist erforderlich. Bitte geben Sie eine E-Mailadresse ein."
+
+#: templates/privacy_policy_tools/second_confirm_required.html:39
+msgid ""
+"An email has already been sent. Please wait until it is confirmed or send a "
+"second mail."
+msgstr ""
+"Eine E-Mail wurde bereits gesendet. Bitte warten Sie bis die Zustimmung erfolgt oder senden Sie eine  "
+"zweite Mail."
+
+#: templates/privacy_policy_tools/second_confirm_required.html:58
+msgid "Request confirmation"
+msgstr "Zustimmung anfordern"
 
 #: templates/privacy_policy_tools/show.html:28
 #: templates/privacy_policy_tools/show.html:29
 msgid "Terms and Conditions"
 msgstr "Benutzerrichtlinien"
+
+#: views.py:188
+msgid "The E-mail was sent to request the confirmation."
+msgstr "Die E-Mail zur Zustimmungsanforderung wurde gesendet."
+
+#: views.py:191
+msgid "E-mail could not be sent"
+msgstr "E-Mail konnte nicht gesendet werden"
+
+#: views.py:261
+msgid "You have successfully agreed to the privacy policy."
+msgstr "Sie haben der Datenschutzerklärung erfolgreich zugestimmt."
+
+#~ msgid "I agree to the terms of this privacy policy"
+#~ msgstr "Ich stimme der Datenschutzerklärung zu"
+
+#~ msgid "Agree"
+#~ msgstr "Zustimmen"

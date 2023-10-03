@@ -1,5 +1,5 @@
 
-# Copyright (c) 2022 Josef Wachtler
+# Copyright (c) 2022-2023 Josef Wachtler
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,12 @@
 """
 This module provides the models of the privacy_policy_tools.
 """
+import random
+import string
 
 from django.db import models
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
+from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from ckeditor.fields import RichTextField
@@ -48,11 +51,9 @@ class PrivacyPolicy(models.Model):
     confirm_checkbox = models.BooleanField(
         default=False, verbose_name=_('Confirm checkbox'))
     confirm_checkbox_text = models.CharField(
-        max_length=128, verbose_name=_('Confirm checkbox text'),
-        default=_('I agree to the terms of this privacy policy'))
+        max_length=128, verbose_name=_('Confirm checkbox text'))
     confirm_button_text = models.CharField(
-        max_length=128, verbose_name=_('Confirm button text'),
-        default=_('Agree'))
+        max_length=128, verbose_name=_('Confirm button text'))
     active = models.BooleanField(default=False, verbose_name=_('Active'))
     published_at = models.DateTimeField(default=timezone.now,
                                         verbose_name=_('Published at'))
@@ -81,7 +82,7 @@ class PrivacyPolicyConfirmation(models.Model):
         - confirmed_at -- date and time of confirmation
         - privacy_policy -- the confirmed privacy policy
     """
-    user = models.ForeignKey(User,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE,
                              verbose_name=_('User'))
     confirmed_at = models.DateTimeField(default=timezone.now,
@@ -89,6 +90,12 @@ class PrivacyPolicyConfirmation(models.Model):
     privacy_policy = models.ForeignKey(PrivacyPolicy,
                                        on_delete=models.CASCADE,
                                        verbose_name=_('Privacy Policy'))
+    second_confirmed_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_('Second confirmed at'),
+        default=None
+    )
 
     def __str__(self):
         """
@@ -99,3 +106,66 @@ class PrivacyPolicyConfirmation(models.Model):
     class Meta:
         verbose_name = _('Privacy Policy Confirmation')
         verbose_name_plural = _('Privacy Policy Confirmations')
+
+
+class OneTimeToken(models.Model):
+    """
+    This model represents a token for second confirmation.
+
+    Fields:
+        - token -- token to use
+        - created_at -- datetime of token creation
+        - confirmation -- confirmation to which the token is related
+    """
+    LENGTH = 32
+    token = models.CharField(
+        max_length=LENGTH,
+        verbose_name=_('Token')
+    )
+    created_at = models.DateTimeField(default=timezone.now,
+                                      verbose_name=_('Created at'))
+    confirmation = models.ForeignKey(PrivacyPolicyConfirmation,
+                                     on_delete=models.CASCADE,
+                                     verbose_name=_('Confirmation'))
+
+    def __str__(self):
+        """
+        Unicode Representation
+        """
+        return str(self.token)
+
+    @classmethod
+    def create_token(cls, confirmation):
+        """
+        Creates a new token.
+
+        Args:
+            confirmation: confirmation for the token
+
+        Returns:
+            the created token
+        """
+        token = cls._generat_token()
+        while cls.objects.filter(token=token,
+                                 confirmation=confirmation).exists():
+            token = cls._generat_token()
+        ott = cls(token=token, confirmation=confirmation)
+        ott.save()
+        return ott
+
+    @classmethod
+    def _generat_token(cls):
+        """
+        Generates a new token string.
+
+        Returns:
+            the token string
+        """
+        token = ''.join(
+            random.choice(string.ascii_lowercase) for i in range(
+                0, cls.LENGTH))
+        return token
+
+    class Meta:
+        verbose_name = _('One Time Token')
+        verbose_name_plural = _('One Time Tokens')

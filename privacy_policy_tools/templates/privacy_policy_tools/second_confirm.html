@@ -20,24 +20,48 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-This is the base template for the LTI consumer.
+This is the template for the second confirm site.
 {% endcomment %}
 
 {% load i18n %}
 
-{% block title %}{% translate "Terms and Conditions" %}{% endblock %}
-{% block branding %}{% translate "Terms and Conditions" %}{% endblock %}
+{% block title %}{{ policy.title }}{% endblock %}
+{% block branding %}{{ policy.title }}{% endblock %}
 {% block breadcrumbs %}{% endblock %}
 
 
 {% block content %}
 
-{% for policy in policies %}
-    <hr>
-    <h3>{{ policy.title }}</h3>
-    <p><small>{% translate "Last changed:" %} {{ policy.published_at }}</small></p>
+    <p>{% translate "Last changed:" %}
+        {{ policy.published_at }}</p>
+
     <p>{{ policy.text|safe }}</p>
-{% endfor %}
-<hr>
+
+    {% if form.non_field_errors %}
+    <ul class="errorlist">
+        <li>{{ form.non_field_errors }}</li>
+    </ul>
+    {% endif %}
+    <form method="post" action="{{ form_url }}">
+        {% csrf_token %}
+        {% if policy.confirm_checkbox is True %}
+            {% for field in form %}
+            {% if field.errors %}
+            <ul class="errorlist">
+                {% for error in field.errors %}
+                <li>{{ error|escape }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <div class="checkbox">
+                {{ field }} {{ field.label }}
+            </div>
+            {% endfor %}
+        {% endif %}
+        <input type="submit" class="default" id="btn_create"
+               value="{{ policy.confirm_button_text }}"
+            style="float: left !important;"/>
+    </form>
+
 
 {% endblock %}

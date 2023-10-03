@@ -1,6 +1,6 @@
 {% extends "admin/base.html" %}
 {% comment %}
-Copyright (c) 2022 Josef Wachtler
+Copyright (c) 2022-2023 Josef Wachtler
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,24 +20,44 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-This is the base template for the LTI consumer.
+This is the template if a second confirmation is required.
 {% endcomment %}
 
 {% load i18n %}
 
-{% block title %}{% translate "Terms and Conditions" %}{% endblock %}
-{% block branding %}{% translate "Terms and Conditions" %}{% endblock %}
+{% block title %}{{ policy.title }}{% endblock %}
+{% block branding %}{{ policy.title }}{% endblock %}
 {% block breadcrumbs %}{% endblock %}
 
 
 {% block content %}
+    <p>
+    {% translate 'A second confirmation is required. Please enter an email.' %}
+    </p>
+    {% if parent_email %}
+        <p>
+        {% translate 'An email has already been sent. Please wait until it is confirmed or send a second mail.' %}
+        </p>
+    {% endif %}
+    <form method="post" action="{{ form_url }}">
+        {% csrf_token %}
+            {% for field in form %}
+            {% if field.errors %}
+            <ul class="errorlist">
+                {% for error in field.errors %}
+                <li>{{ error|escape }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <div class="form-group">
+            {{ field.label }} {{ field }}
+            </div>
 
-{% for policy in policies %}
-    <hr>
-    <h3>{{ policy.title }}</h3>
-    <p><small>{% translate "Last changed:" %} {{ policy.published_at }}</small></p>
-    <p>{{ policy.text|safe }}</p>
-{% endfor %}
-<hr>
+            {% endfor %}
+        <input type="submit" class="default" id="btn_create"
+               value="{% translate 'Request confirmation' %}"
+            style="float: left !important;"/>
+    </form>
+
 
 {% endblock %}

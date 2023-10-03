@@ -1,5 +1,4 @@
-MIT License
-
+{% comment %}
 Copyright (c) 2022-2023 Josef Wachtler
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,3 +18,18 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+This is the template for the mail to request a second confirmation.
+{% endcomment %}
+{% load i18n %}
+{% blocktranslate %}
+Hello!
+
+Someone requested your confirmation to a privacy policy.
+Please click the following link to read the policy and to confirm it:
+{% endblocktranslate %}
+{{ confirm_url }}
+{% blocktranslate %}
+Thank you!
+Your privacy team
+{% endblocktranslate %}

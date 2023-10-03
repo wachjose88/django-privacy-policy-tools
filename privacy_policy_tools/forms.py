@@ -1,5 +1,5 @@
 
-# Copyright (c) 2022 Josef Wachtler
+# Copyright (c) 2022-2023 Josef Wachtler
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,14 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 
+class SecondConfirmGetEmail(forms.Form):
+    use_required_attribute = False
+    email = forms.EmailField(
+        label=_('E-mail'),
+        required=True
+    )
+
+
 class ConfirmForm(forms.Form):
     """
     This is a form to confirm a policy
@@ -39,7 +47,7 @@ class ConfirmForm(forms.Form):
 
     def __init__(self, *args, **kwrds):
         """
-        constuctor
+        constructor
         sets label
         """
         agree_label = kwrds.pop('agree_label')
