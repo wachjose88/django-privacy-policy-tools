@@ -47,7 +47,7 @@ class ConfirmForm(forms.Form):
 
     def __init__(self, *args, **kwrds):
         """
-        constuctor
+        constructor
         sets label
         """
         agree_label = kwrds.pop('agree_label')

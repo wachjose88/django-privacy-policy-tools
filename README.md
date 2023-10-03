@@ -141,7 +141,7 @@ In `show.html` you have to place something like this:
 ```
 {% for policy in policies %}
     <h3>{{ policy.title }}</h3>
-    <p><small>{% trans "Last changed:" %} {{ policy.published_at }}</small></p>
+    <p><small>{% translate "Last changed:" %} {{ policy.published_at }}</small></p>
     <p>{{ policy.text|safe }}</p>
 {% endfor %}
 ```
@@ -150,7 +150,7 @@ In `confirm.html` you have to do something like this:
 
 ```
 <h3>{{ policy.title }}</h3>
-<p>{% trans "Last changed:" %}
+<p>{% translate "Last changed:" %}
     {{ policy.published_at }}</p>
 
 <p>{{ policy.text|safe }}</p>
@@ -194,7 +194,7 @@ create the link in your template in the following way:
 
 ```
 {% if privacy_enabled %}
-    <a href="{% url privacy_view %}">{% trans "Terms and Conditions" %}</a>
+    <a href="{% url privacy_view %}">{% translate "Terms and Conditions" %}</a>
 {% endif %}
 ```
 
