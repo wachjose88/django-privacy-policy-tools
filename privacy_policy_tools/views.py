@@ -168,7 +168,6 @@ def second_confirm_required(request, confirm_id):
             context = {
                 'confirm_url': confirm_url,
             }
-            print(confirm_url)
             subject = render_to_string(
                 'privacy_policy_tools/second_confirm_mail_subject.txt',
                 {})

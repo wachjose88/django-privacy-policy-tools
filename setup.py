@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="django-privacy-policy-tools",
-    version="0.1.0",
+    version="0.1.1",
     author="Josef Wachtler",
     author_email="josef.wachtler@gmail.com",
     description="This is a highly configurable Django app to manage privacy policies and confirmations.",
