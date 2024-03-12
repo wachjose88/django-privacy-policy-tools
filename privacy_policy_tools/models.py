@@ -30,7 +30,7 @@ from django.contrib.auth.models import Group
 from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from ckeditor.fields import RichTextField
+from tinymce.models import HTMLField
 
 
 class PrivacyPolicy(models.Model):
@@ -47,7 +47,7 @@ class PrivacyPolicy(models.Model):
     """
     title = models.CharField(max_length=128, verbose_name=_('Title'),
                              default=_('Privacy Policy'))
-    text = RichTextField(verbose_name=_('Text'))
+    text = HTMLField(verbose_name=_('Text'))
     confirm_checkbox = models.BooleanField(
         default=False, verbose_name=_('Confirm checkbox'))
     confirm_checkbox_text = models.CharField(
