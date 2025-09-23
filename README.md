@@ -12,7 +12,7 @@ Features:
 * View all confirmations in the admin interface
 
 This app is build for the current LTS Version of 
-[Django](https://www.djangoproject.com/), which is 4.2.
+[Django](https://www.djangoproject.com/), which is 5.2.
 
 ## Install
 
